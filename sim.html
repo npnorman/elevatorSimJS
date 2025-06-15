@@ -3,10 +3,49 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>sim</title>
+    <link rel="stylesheet" href="css/elevatorSim.css">
+    <title>Elevator Sim</title>
 </head>
 <body>
     <a href="/documentation.html">Documentation</a>
+    <button id="startSim">Start Simulation</button>
+
+    <table class="floor-table">
+        <tr>
+            <th>Floor #</th>
+            <th>Requesting Elevator</th>
+            <th>Elevator</th>
+            <th>Request completed</th>
+        </tr>
+        <tr>
+            <td class="number">1</td>
+            <td class="requesting">☺☺☺</td>
+            <td></td>
+            <td>☺☺☺☺☺☺☺☺☺☺</td>
+        </tr>
+        <tr>
+            <td class="number">2</td>
+            <td class="requesting">☺☺☺☺☺☺</td>
+            <td class="elevator-bold">☺☺</td>
+            <td>☺☺☺</td>
+        </tr>
+        <tr>
+            <td class="number">3</td>
+            <td class="requesting">☺</td>
+            <td></td>
+            <td>☺☺☺☺☺☺☺☺☺☺☺☺</td>
+        </tr>
+    </table>
+
+<table id="create-table" class="floor-table">
+        <tr>
+            <th>Floor #</th>
+            <th>Requesting Elevator</th>
+            <th>Elevator</th>
+            <th>Request completed</th>
+        </tr>
+    </table>
+
     <h1>Log Output</h1>
     <p id="output"></p>
 

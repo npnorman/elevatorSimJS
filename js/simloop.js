@@ -2,20 +2,21 @@
 //June 2025 Nicholas Norman
 
 var output = document.getElementById("output");
-
-function addToLog(logItem) {
-    output.innerHTML += logItem + "<br>";
-}
+var startSimBtn = document.getElementById("startSim");
 
 //The simulation has some global elements that all things can access
 var frame = 0;
-var frameRate = 1000; //1 sec
+var frameStop = 1000;
+var frameRate = 0.25 * 1000; //1 sec
+var personToken = "☺";
 
 //log => addToLog for now
 var outsideRequests = [];
 var finishedRequests = [];
 var numberOfFloors = 10;
 var numberOfElevators = 1;
+var elevatorCapacity = 5;
+var elevators = [];
 
 function simulationLoop() {
 
@@ -23,16 +24,38 @@ function simulationLoop() {
 
     //take input
     //make a new request
-    outsideRequests.push(makeANewRequest(numberOfFloors));
+    if (frame % 4 == true) { //may implement more random
+        outsideRequests.push(makeANewRequest(numberOfFloors));
+    }
 
     //process
+    for (var i = 0; i < numberOfElevators; i++) {
+        if (elevators[i].canTakeNewRequest()) {
+            //move to a new goal
+            elevators[i].setNewGoal();
+        } else {
+            elevators[i].moveTowardsGoal();
+        }
+
+        console.log(elevators[i].getStats());
+    }
 
     //display data
     addToLog("frame: " + frame);
     addToLog("outside: " + outsideRequests);
+    for (var i = 0; i < numberOfElevators; i++) {
+        addToLog("inside " + i + ": " + elevators[i]._insideRequests);
+    }
+    addToLog("finsihed: " + finishedRequests);
+    addToLog("");
+
+    //table display
+    displayFinishedToRequestCompleted();
+    displayInsideToElevator();
+    displayOutsideToRequestingElevator();
 
     //deciding to stop
-    if (frame >= 5) {
+    if (frame >= frameStop) {
         stop();
     } else {
         setTimeout(simulationLoop, frameRate);
@@ -41,8 +64,13 @@ function simulationLoop() {
 
 function startup() {
     //sets up the sim
+    for (var i = 0; i < numberOfElevators; i++) {
+        elevators.push(new Elevator());
+    }
+
+    buildTable();
     setTimeout(simulationLoop, frameRate);
-    addToLog("Elevator Sim Starting");
+    addToLog("Elevator Sim Starting<br>");
 }
 
 function makeANewRequest(numberOfFloors) {
@@ -65,5 +93,103 @@ function getRandomIntInclusive(min, max) {
   return Math.floor(Math.random() * (max - min + 1) + min);
 }
 
+function addToLog(logItem) {
+    output.innerHTML = logItem + "<br>" + output.innerHTML;
+}
+
+//DISPLAY
+
+var createTable = document.getElementById("create-table");
+
+//rows
+var requestingCellsList = [];
+var elevatorCellsList = [];
+var requestedCellsList = [];
+
+function buildTable() {
+    //build a table with the appropriate number of floors and elevators
+
+    for (var i = 0; i < numberOfElevators; i++) {
+        //create cells for that many elevators
+        elevatorCellsList.push([]);
+        //add more rows for it
+    }
+
+    //for number of floors
+    for (var i = 0; i < numberOfFloors; i++) {
+        var row = document.createElement("tr");
+        var floorCell = document.createElement("td");
+        floorCell.classList.add("number");
+        floorCell.innerHTML = i + 1;
+
+        var requestingCell = document.createElement("td");
+        requestingCell.classList.add("requesting");
+        requestingCell.innerHTML = "";
+        requestingCellsList.push(requestingCell);
+
+        for (var j = 0; j < numberOfElevators; j++) {
+            var elevatorCell = document.createElement("td");
+            elevatorCell.innerHTML = "";
+            elevatorCellsList[j].push(elevatorCell);
+        }
+
+        var requestedCell = document.createElement("td");
+        requestedCell.innerHTML = "";
+        requestedCellsList.push(requestedCell);
+
+        row.appendChild(floorCell);
+        row.appendChild(requestingCell);
+        for (var j = 0; j < numberOfElevators; j++) {
+            row.appendChild(elevatorCellsList[j][i]);
+        }
+        row.appendChild(requestedCell);
+
+        createTable.appendChild(row);
+    }
+
+    elevatorCell
+}
+
+function displayFinishedToRequestCompleted() {
+    //for each request in finsihed, display its inside request on the floor
+    requestedCellsList.forEach((item) => { item.innerHTML = ""; });
+
+    finishedRequests.forEach((item) => {
+        requestedCellsList[item.getInsideRequest() - 1].innerHTML += personToken;
+    });
+}
+
+function displayOutsideToRequestingElevator() {
+    //for each request in outside, display to the outside request floor
+    requestingCellsList.forEach((item) => { item.innerHTML = ""; });
+
+    outsideRequests.forEach((item) => {
+        requestingCellsList[item.getOutsideRequest() - 1].innerHTML += personToken;
+    });
+}
+
+function displayInsideToElevator() {
+    for (var i = 0; i < numberOfElevators; i++) {
+        //clear bold
+        elevatorCellsList[i].forEach((item) => { item.classList.remove("elevator-bold"); });
+
+        //clear text
+        elevatorCellsList[i].forEach((item) => { item.innerHTML = ""; });
+
+        elevators[i]._insideRequests.forEach((item) => {
+            //for each elevator, display its inside requests in the right floor
+            elevatorCellsList[i][elevators[i]._currentFloor - 1].innerHTML += personToken;
+        });
+
+        //set that box to class "elevator-bold"
+        elevatorCellsList[i][elevators[i]._currentFloor - 1].classList.add("elevator-bold");
+    }
+}
+
+//END DISPLAY
+
 //SIMULATION
-startup();
+startSimBtn.addEventListener("click", () => {
+    startSimBtn.disabled = true;
+    startup();
+});
