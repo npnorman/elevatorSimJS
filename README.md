@@ -8,6 +8,7 @@ The only thing you can modify is the following class:
 
 Rules:
 * You may add variables to this class
+* you may add functions to this class
 * You may NOT access the super class' variables directly
 * You may NOT access the super class' methods directly (unless stated below)
 

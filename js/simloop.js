@@ -9,7 +9,7 @@ var reloadBtn = document.getElementById("reloadSim");
 
 //The simulation has some global elements that all things can access
 var frame = 0;
-var frameStop = 1000;
+var frameStop = 1000000000000000000000000000000;
 var frameRate = 0.25 * 1000; //1 sec
 
 //control panel
