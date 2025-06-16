@@ -1,3 +1,6 @@
+### HOW TO RUN
+Run this as HTML, CSS, and JS. (I reccomend using Live Server Extension with VS Code).
+
 # RULES FOR SIMULATION:
 
 The only thing you can modify is the following class:
