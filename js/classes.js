@@ -95,6 +95,10 @@ class Elevator {
         return sharedGoals;
     }
 
+    getGoal() {
+        return this.goal;
+    }
+
     //hidden from the operator
 
     addSharedGoal() {

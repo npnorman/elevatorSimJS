@@ -30,12 +30,11 @@ function simulationLoop() {
 
     //process
     for (var i = 0; i < numberOfElevators; i++) {
-        if (elevators[i].canTakeNewRequest()) {
-            //move to a new goal
-            elevators[i].setNewGoal();
-        } else {
-            elevators[i].moveTowardsGoal();
-        }
+        //set a new goal
+        elevators[i].setNewGoal();
+
+        //move to goal
+        elevators[i].moveTowardsGoal();
 
         console.log(elevators[i].getStats());
     }

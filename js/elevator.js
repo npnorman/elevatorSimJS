@@ -4,8 +4,11 @@ class ElevatorOperator extends Elevator{
         super(capacity);
     }
 
+    // on every frame:
+    // a new floor is chosen to be the new goal: The floor to stop at
+    // and then the elevator is moved 1 floor towards that goal (either up or down)
+
     pickFloorToStopAt() {
-        //fill in with your algorithm
 
         if (this.getInsideRequests().length != 0) {
 
@@ -22,6 +25,7 @@ class ElevatorOperator extends Elevator{
 
     //RULES FOR SCHEDULING
     // You only have access to the following:
+    // getGoal() //returns the current floor trying to reach
     // getOutsideRequests() //returns int[] of all requests for pickup
     // getInsideRequests() //returns int[] of requests for dropoff in the current elevator
     // getCurrentFloor() //returns int which is the current floor the elevator is on
