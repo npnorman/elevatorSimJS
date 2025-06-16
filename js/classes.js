@@ -40,12 +40,14 @@ class Elevator {
         //return a floor to stop at
         //this is overriden in the children
 
-        //get ouside, unless there is an inside
-
         if (this.getInsideRequests().length != 0) {
+
             return this.getInsideRequests()[0];
+
         } else if(this.getOutsideRequests().length != 0) {
+
             return this.getOutsideRequests()[0];
+
         } else {
             return this.getCurrentFloor();
         }
@@ -83,12 +85,27 @@ class Elevator {
         return this._insideRequests.length;
     }
 
+    getSharedGoals() {
+        return sharedGoals;
+    }
+
     //hidden from the operator
-    
+
+    addSharedGoal() {
+        sharedGoals.push(this.goal);
+    }
+
+    removeSharedGoal() {
+        sharedGoals.splice(sharedGoals.indexOf(this.goal), 1);
+    }
+
     setNewGoal() {
         //sets the goal for the elevator to stop at. Sets isFree to false.
         this.goal = this.pickFloorToStopAt();
         this.isFree = false;
+
+        //set shared goal
+        this.addSharedGoal();
     }
 
     _stopAtFloor() {
@@ -102,6 +119,7 @@ class Elevator {
         }
 
         //after stopping at the requested floor, pick a new floor
+        this.removeSharedGoal();
         this.isFree = true;
     }
 

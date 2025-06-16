@@ -13,8 +13,9 @@ var personToken = "☺";
 //log => addToLog for now
 var outsideRequests = [];
 var finishedRequests = [];
+var sharedGoals = [];
 var numberOfFloors = 10;
-var numberOfElevators = 1;
+var numberOfElevators = 2;
 var elevatorCapacity = 5;
 var elevators = [];
 
@@ -113,6 +114,11 @@ function buildTable() {
         //create cells for that many elevators
         elevatorCellsList.push([]);
         //add more rows for it
+        var headerRow = createTable.rows[0];
+        var cell = document.createElement("th");
+        cell.innerHTML = "Elevator (" + (numberOfElevators - i) +")";
+
+        headerRow.insertBefore(cell, headerRow.cells[1 + 1]);
     }
 
     //for number of floors
