@@ -8,7 +8,6 @@ var startSimBtn = document.getElementById("startSim");
 var frame = 0;
 var frameStop = 1000;
 var frameRate = 0.25 * 1000; //1 sec
-var personToken = "☺";
 
 //log => addToLog for now
 var outsideRequests = [];
@@ -66,7 +65,7 @@ function simulationLoop() {
 function startup() {
     //sets up the sim
     for (var i = 0; i < numberOfElevators; i++) {
-        elevators.push(new Elevator());
+        elevators.push(new ElevatorOperator());
     }
 
     buildTable();
@@ -161,7 +160,7 @@ function displayFinishedToRequestCompleted() {
     requestedCellsList.forEach((item) => { item.innerHTML = ""; });
 
     finishedRequests.forEach((item) => {
-        requestedCellsList[item.getInsideRequest() - 1].innerHTML += personToken;
+        requestedCellsList[item.getInsideRequest() - 1].appendChild(item.toToken());
     });
 }
 
@@ -170,7 +169,7 @@ function displayOutsideToRequestingElevator() {
     requestingCellsList.forEach((item) => { item.innerHTML = ""; });
 
     outsideRequests.forEach((item) => {
-        requestingCellsList[item.getOutsideRequest() - 1].innerHTML += personToken;
+        requestingCellsList[item.getOutsideRequest() - 1].appendChild(item.toToken());
     });
 }
 
@@ -184,7 +183,7 @@ function displayInsideToElevator() {
 
         elevators[i]._insideRequests.forEach((item) => {
             //for each elevator, display its inside requests in the right floor
-            elevatorCellsList[i][elevators[i]._currentFloor - 1].innerHTML += personToken;
+            elevatorCellsList[i][elevators[i]._currentFloor - 1].appendChild(item.toToken());
         });
 
         //set that box to class "elevator-bold"

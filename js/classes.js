@@ -9,6 +9,10 @@ class FloorRequest {
         //holding information about frames waiting
         this.insideWait = 0;
         this.outsideWait = 0;
+
+        //display
+        this.personToken = "☺";
+        this.color = "#" + this.getRandomColor();
     }
 
     getOutsideRequest() {
@@ -22,6 +26,18 @@ class FloorRequest {
     //override the toString for log
     toString() {
         return "[out: " + this.outsideRequest + "," + "in: " + this.insideRequest + "]";
+    }
+
+    getRandomColor() {
+        return Math.floor(Math.random()*16777215).toString(16);
+    }
+
+    toToken() {
+        var span = document.createElement("span");
+        span.innerHTML = this.personToken;
+        span.style.color = this.color;
+
+        return span;
     }
 }
 
@@ -40,17 +56,7 @@ class Elevator {
         //return a floor to stop at
         //this is overriden in the children
 
-        if (this.getInsideRequests().length != 0) {
-
-            return this.getInsideRequests()[0];
-
-        } else if(this.getOutsideRequests().length != 0) {
-
-            return this.getOutsideRequests()[0];
-
-        } else {
-            return this.getCurrentFloor();
-        }
+        return 1;
     }
 
     getOutsideRequests() {
