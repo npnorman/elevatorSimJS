@@ -3,28 +3,34 @@
 
 var output = document.getElementById("output");
 var startSimBtn = document.getElementById("startSim");
+var stopSimBtn = document.getElementById("stopSim");
+var resumeBtn = document.getElementById("resumeSim");
+var reloadBtn = document.getElementById("reloadSim");
 
 //The simulation has some global elements that all things can access
 var frame = 0;
 var frameStop = 1000;
 var frameRate = 0.25 * 1000; //1 sec
 
-//log => addToLog for now
-var outsideRequests = [];
-var finishedRequests = [];
-var sharedGoals = [];
+//control panel
 var numberOfFloors = 10;
 var numberOfElevators = 2;
 var elevatorCapacity = 5;
+var requestRate = 2;
+
+var outsideRequests = [];
+var finishedRequests = [];
+var sharedGoals = [];
 var elevators = [];
 
 function simulationLoop() {
 
+    console.log(frame);
     frame += 1;
 
     //take input
     //make a new request
-    if (frame % 4 == true) { //may implement more random
+    if (frame % requestRate == true) { //may implement more random
         outsideRequests.push(makeANewRequest(numberOfFloors));
     }
 
@@ -38,15 +44,6 @@ function simulationLoop() {
 
         console.log(elevators[i].getStats());
     }
-
-    //display data
-    addToLog("frame: " + frame);
-    addToLog("outside: " + outsideRequests);
-    for (var i = 0; i < numberOfElevators; i++) {
-        addToLog("inside " + i + ": " + elevators[i]._insideRequests);
-    }
-    addToLog("finsihed: " + finishedRequests);
-    addToLog("");
 
     //table display
     displayFinishedToRequestCompleted();
@@ -63,13 +60,31 @@ function simulationLoop() {
 
 function startup() {
     //sets up the sim
+
+    numberOfElevators = getValueFromElementId("numberOfElevators");
+    numberOfFloors = getValueFromElementId("numberOfFloors");
+    frameRate = getValueFromElementId("frameRate") * 1000;
+    requestRate = getValueFromElementId("requestRate");
+
+    console.log(numberOfElevators, numberOfFloors, frameRate);
+
+    disableElementById("numberOfElevators");
+    disableElementById("numberOfFloors");
+    disableElementById("frameRate");
+    disableElementById("requestRate");
+
     for (var i = 0; i < numberOfElevators; i++) {
         elevators.push(new ElevatorOperator());
     }
 
     buildTable();
     setTimeout(simulationLoop, frameRate);
-    addToLog("Elevator Sim Starting<br>");
+    //addToLog("Elevator Sim Starting<br>");
+}
+
+function resume() {
+    setTimeout(simulationLoop, frameRate);
+    frameStop = 1000000000000;
 }
 
 function makeANewRequest(numberOfFloors) {
@@ -82,7 +97,7 @@ function makeANewRequest(numberOfFloors) {
 
 function stop() {
     //tears down the sim
-    addToLog("Elevator Sim Stopping");
+    frameStop = 0;
 }
 
 //helper functions
@@ -90,6 +105,14 @@ function getRandomIntInclusive(min, max) {
   min = Math.ceil(min);
   max = Math.floor(max);
   return Math.floor(Math.random() * (max - min + 1) + min);
+}
+
+function getValueFromElementId(id) {
+    return document.getElementById(id).value;
+}
+
+function disableElementById(id) {
+    document.getElementById(id).disabled = true;
 }
 
 function addToLog(logItem) {
@@ -150,8 +173,6 @@ function buildTable() {
 
         createTable.appendChild(row);
     }
-
-    elevatorCell
 }
 
 function displayFinishedToRequestCompleted() {
@@ -193,7 +214,28 @@ function displayInsideToElevator() {
 //END DISPLAY
 
 //SIMULATION
+stopSimBtn.disabled = true;
+resumeBtn.disabled = true;
+
 startSimBtn.addEventListener("click", () => {
     startSimBtn.disabled = true;
     startup();
+
+    stopSimBtn.disabled = false;
+});
+
+stopSimBtn.addEventListener("click", () => {
+    stopSimBtn.disabled = true;
+    stop();
+    resumeBtn.disabled = false;
+});
+
+resumeBtn.addEventListener("click", () => {
+    resumeBtn.disabled = true;
+    resume();
+    stopSimBtn.disabled = false;
+});
+
+reloadBtn.addEventListener("click", () => {
+    window.location.reload();
 });
